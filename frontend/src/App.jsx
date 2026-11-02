@@ -9,8 +9,7 @@ export default function App() {
   const [email, setEmail] = useState("");
   const [course, setCourse] = useState("");
   const [message, setMessage] = useState("");
-  
-  // Track if we are editing an existing student (holds their ID, or null)
+ 
   const [editingId, setEditingId] = useState(null);
 
   async function loadStudents() {
@@ -26,13 +25,11 @@ export default function App() {
   useEffect(() => {
     loadStudents();
   }, []);
-
-  // Handles both Creating AND Updating records
+  
   async function handleSubmit(event) {
     event.preventDefault();
     setMessage("");
 
-    // Determine endpoint url and HTTP technique depending on application state
     const url = editingId ? `${API}/${editingId}` : API;
     const method = editingId ? "PUT" : "POST";
 
@@ -47,8 +44,7 @@ export default function App() {
       if (!response.ok) {
         throw new Error(result.error || "Failed to save student");
       }
-
-      // Reset application state back to clean default inputs
+      
       setName("");
       setEmail("");
       setCourse("");
@@ -59,17 +55,15 @@ export default function App() {
       setMessage(error.message);
     }
   }
-
-  // Populates the form inputs with data from the student being edited
+  
   function startEdit(student) {
     setEditingId(student.id);
     setName(student.name);
     setEmail(student.email);
     setCourse(student.course);
-    setMessage(""); // Clear out any stale alerts
+    setMessage("");
   }
 
-  // Cancels editing state and flushes form inputs
   function cancelEdit() {
     setEditingId(null);
     setName("");
@@ -77,7 +71,6 @@ export default function App() {
     setCourse("");
   }
 
-  // Dispatches network payload to DELETE entry natively from Database
   async function handleDelete(id) {
     if (!window.confirm("Are you sure you want to delete this student record?")) return;
     setMessage("");
@@ -93,8 +86,7 @@ export default function App() {
       }
 
       setMessage("Student deleted successfully.");
-      
-      // If we happened to delete the entry we were currently editing, reset the form
+    
       if (editingId === id) {
         cancelEdit();
       }
@@ -109,8 +101,7 @@ export default function App() {
     <main style={{ maxWidth: 700, margin: "40px auto", padding: 20 }}>
       <h1>Student Information System</h1>
       <p className="subtitle">Add a student and save the record to MySQL through Prisma.</p>
-
-      {/* Header switches adaptively based on state */}
+      
       <h3>{editingId ? "✏️ Edit Student Info" : "➕ Add New Student"}</h3>
       
       <form onSubmit={handleSubmit}>
